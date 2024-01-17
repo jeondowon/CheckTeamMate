@@ -1,12 +1,16 @@
 //팀 화면
 import { useNavigation } from "@react-navigation/core";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, FlatList, Dimensions, TouchableWithoutFeedback } from "react-native";
-import { useState, useCallback} from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Dimensions, TouchableWithoutFeedback, Modal} from "react-native";
+import { useState, useCallback, useEffect} from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import TeamItem from "./TeamItem";
 import { db, doc, updateDoc, deleteDoc, getDocs, collection, addDoc } from "../firebase/index"
 import * as React from 'react';
+import TeamRevisePage from "./TeamRevisePage";
+import { onSnapshot } from 'firebase/firestore';
+
+
 
 const WINDOW_WIDHT = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -39,12 +43,37 @@ TeamPage = () => {
         await deleteDoc(doc(db, "team", id));
         getTeamList();
     };
+    
+    useEffect(() => {
+        // 컴포넌트가 마운트될 때 실행되는 코드
+        const teamCollection = collection(db, 'team');
+    
+        // 컬렉션에 대한 실시간 업데이트를 감지하는 이벤트 핸들러
+        const onCollectionUpdate = (querySnapshot) => {
+            setTeamList(
+              querySnapshot.docs.map((doc) => {
+                const data = { ...doc.data(), id: doc.id, fileColor: doc.fileImage };
+                console.log('id:', data.id);
+                console.log('fileColor:', data.fileImage);
+                return data;
+              })
+            );
+          };
+        
+    
+        // 이벤트 리스너 등록
+        const unsubscribe = onSnapshot(teamCollection, onCollectionUpdate);
+    
+        // 컴포넌트가 언마운트될 때 이벤트 리스너 해제
+        return () => {
+          unsubscribe();
+        };
+      }, [setTeamList]);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            getTeamList();
-        }, [])
-    );
+    const [TeamOptionModalVisible, SetTeamOptionModalVisible] = useState(false);
+    handleTeamOptionPress = () => {
+        SetTeamOptionModalVisible(!TeamOptionModalVisible);
+    }
 
     return (
         <View style={styles.container}>
@@ -92,11 +121,12 @@ TeamPage = () => {
                             fileColor={item.fileImage}
                             deleteTeamItem={deleteTeamItem}
                             getTeamList={getTeamList}
-                        >
-                        </TeamItem>
+                        />
                     )}
                     keyExtractor={item => item.id}
                 />}
+            </View>
+            <View>
             </View>
         </View >
     );

@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Image} from "react-native";
 import InitialPage from './screens/InitialPage';
 import SignInPage from './screens/SignInPage';
-import LoadingScreen from './screens/LoadingPage';
+
 import TeamPage from './screens/TeamPage';
 import TeamAddPage from './screens/TeamAddPage';
 import TeamJoinPage from './screens/TeamJoinPage';
@@ -12,6 +12,7 @@ import SettingPage from './screens/SettingPage';
 import PersonalPage from './screens/PersonalPage';
 import GuidancePage from './screens/GuidancePage';
 import SchedulePage from './screens/SchedulePage';
+import TeamRevisePage from './screens/TeamRevisePage';
 
 //<Stack.Screen name="LoadingScreen" component={LoadingScreen} ></Stack.Screen>
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,7 @@ function TeamPageTab() {
       <TeamStack.Screen name="TeamPage" component={TeamPage} />
       <TeamStack.Screen name="TeamAddPage" component={TeamAddPage} />
       <TeamStack.Screen name="TeamJoinPage" component={TeamJoinPage} />
+      <TeamStack.Screen name="TeamRevisePage" component={TeamRevisePage} />
     </TeamStack.Navigator>
   );
 }

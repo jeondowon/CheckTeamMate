@@ -1,17 +1,23 @@
-//팀 등록 화면
-import React, { useState, useEffect} from 'react';
+//팀 수정 화면
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, Keyboard, TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { color } from './colors';
-import { db, collection, addDoc } from "../firebase/index";
-import Modal from "react-native-modal"
+import { db, collection, addDoc, updateDoc, doc } from "../firebase/index";
+import Modal from "react-native-modal";
+import { useNavigation } from "@react-navigation/core";
+
 
 const WINDOW_WIDHT = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const TeamAddPage = ({navigation}) => {
+const TeamRevisePage = ({ route }) => {
+    const { title, fileColor, id} = route.params;
+    const [textInputValue, setTextInputValue] = useState(title);
+    const [selectedColor, setSelectedColor] = useState(fileColor);
 
+    const navigation = useNavigation();
     //색상 선택 모달창 띄우기/숨기기 (초기값: 숨기기)
     const [isModalVisible, setIsModalVisible] = useState(false);
     const openModal = () => {
@@ -21,12 +27,11 @@ const TeamAddPage = ({navigation}) => {
         setIsModalVisible(false);
     }
     //색상 옵션 (초기값: 어두운 남색(기본 색상))
-    const [selectedColor, setSelectedColor] = useState(color.colors1[0]);
     const handleColorSelect = (color) => {
         setSelectedColor(color);
     };
 
-    const [colorConfirmed, setColorConfirmed] = useState(color.colors1[0]);    //확인버튼 누른 후 확정된 색상
+    const [colorConfirmed, setColorConfirmed] = useState(fileColor);    //확인버튼 누른 후 확정된 색상
 
     //모달에서 색상 선택 후 확인 누르면 색상 변경 -> 모달 close
     const confirmColor = () => {
@@ -41,8 +46,6 @@ const TeamAddPage = ({navigation}) => {
 
     //문자 입력시 확인버튼 활성화, 색상 변경
 
-    const [textInputValue, setTextInputValue] = useState("");
-
     const onTextInputChange = (text) => {
         setTextInputValue(text)
         if (text.length > 0) {
@@ -54,21 +57,17 @@ const TeamAddPage = ({navigation}) => {
             setConfirmBtnColor(color.deactivated);
         }
     };
-
-    const addTeamItem = async () => {
-        try {
-          const docRef = await addDoc(collection(db, "team"), {
-            title: textInputValue,
+    
+    const updateTeam = async() => {
+        const teamRef = doc(db, "team", id);
+        await updateDoc(teamRef, {
             fileImage: colorConfirmed,
-          });
-          console.log("Document written with ID: ", docRef.id, "title:", textInputValue, "fileImage:", colorConfirmed);
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
-      };
+            title: textInputValue,
+        });
+    };
 
-      confirmBtnPressed = () => {
-        addTeamItem();
+    const confirmChanges = () => {
+        updateTeam();
     };
 
     return (
@@ -82,20 +81,20 @@ const TeamAddPage = ({navigation}) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.headerTitleContainer}>
-                        <Text style={styles.headerText}>팀 등록</Text>
+                        <Text style={styles.headerText}>팀 수정</Text>
                     </View>
-                    <TouchableOpacity disabled={buttonDisabled} style={styles.confirmBtn} onPress={() => {confirmBtnPressed()}}>
-                        <Text style={{ ...styles.headerText, color: confirmBtnColor }} onPress={() => {confirmBtnPressed(); navigation.navigate('TeamPage');}}>확인</Text>
+                    <TouchableOpacity disabled={buttonDisabled} style={styles.confirmBtn} onPress={() => { confirmChanges(); navigation.navigate('TeamPage'); }}>
+                        <Text style={{ ...styles.headerText, color: confirmBtnColor }} >확인</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ ...styles.colorTextInputContainer, borderColor: colorConfirmed }}>
                     <View flex={1}>
-                        <TextInput 
-                        placeholder='팀 이름' 
-                        value={textInputValue}
-                        returnKeyType='done' 
-                        onChangeText={onTextInputChange} 
-                        style={styles.colorTextInput}
+                        <TextInput
+                            placeholder={title}
+                            value={textInputValue}
+                            returnKeyType='done'
+                            onChangeText={onTextInputChange}
+                            style={styles.colorTextInput}
                         ></TextInput>
                     </View>
                     <TouchableWithoutFeedback onPress={openModal}>
@@ -193,9 +192,9 @@ const TeamAddPage = ({navigation}) => {
             </View>
         </TouchableWithoutFeedback>
     );
-} 
+}
 
-export default TeamAddPage
+export default TeamRevisePage
 
 const styles = StyleSheet.create({
     container: {
