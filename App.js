@@ -13,6 +13,7 @@ import PersonalPage from './screens/PersonalPage';
 import GuidancePage from './screens/GuidancePage';
 import SchedulePage from './screens/SchedulePage';
 import TeamRevisePage from './screens/TeamRevisePage';
+import AssignmentPage from './screens/AssignmentPage';
 
 //<Stack.Screen name="LoadingScreen" component={LoadingScreen} ></Stack.Screen>
 const Tab = createBottomTabNavigator();
@@ -37,6 +38,7 @@ function TeamPageTab() {
       <TeamStack.Screen name="TeamAddPage" component={TeamAddPage} />
       <TeamStack.Screen name="TeamJoinPage" component={TeamJoinPage} />
       <TeamStack.Screen name="TeamRevisePage" component={TeamRevisePage} />
+      <TeamStack.Screen name="AssignmentPage" component={AssignmentPage} />
     </TeamStack.Navigator>
   );
 }

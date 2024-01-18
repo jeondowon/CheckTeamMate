@@ -1,25 +1,25 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/core";
 
-{/* 반응형 디자인을 위한 스크린의 높이, 넓이 구하는 코드 */}
+{/* 반응형 디자인을 위한 스크린의 높이, 넓이 구하는 코드 */ }
 const WINDOW_WIDHT = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const TeamItem = (props) => {
     const navigation = useNavigation();
 
-    {/* 팀 이름과 파일 아이콘 색상 */}
+    {/* 팀 이름과 파일 아이콘 색상 */ }
     const [title, setTitle] = useState(props.title);
     const [fileColor, setFileColor] = useState(props.fileColor);
 
-    {/* 팀 삭제하기 함수 */}
+    {/* 팀 삭제하기 함수 */ }
     const deleteItem = () => {
         props.deleteTeamItem(props.id);
     };
 
-    {/* 팀 이름 혹은 파일 아이콘 색상이 변경되었을 때 re-render */}
+    {/* 팀 이름 혹은 파일 아이콘 색상이 변경되었을 때 re-render */ }
     useEffect(() => {
         setTitle(props.title);
     }, [props.title]);
@@ -27,7 +27,7 @@ const TeamItem = (props) => {
         setFileColor(props.fileColor);
     }, [props.fileColor]);
 
-    {/* 선택한 색상에 따라 팀 파일 아이콘 변경 */}
+    {/* 선택한 색상에 따라 팀 파일 아이콘 변경 */ }
     const [imageSource, setImageSource] = useState(require('./Images/FileColor/9CB1BB.png')); // Set default image source
     useEffect(() => {
 
@@ -141,72 +141,74 @@ const TeamItem = (props) => {
         }
     }, [fileColor]);
 
-    {/* 팀 파일 아이콘 옵션 버튼 터치 시 팀 설정 모달창 띄우기 */}
+    {/* 팀 파일 아이콘 옵션 버튼 터치 시 팀 설정 모달창 띄우기 */ }
     const [TeamOptionModalVisible, SetTeamOptionModalVisible] = useState(false);
     handleTeamOptionPress = () => {
         SetTeamOptionModalVisible(!TeamOptionModalVisible);
     }
 
     return (
-        <ImageBackground style={styles.file} source={imageSource} >
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>{title}</Text>
-            </View>
-            {/* 팀 파일 아이콘 옵션 버튼 */}
-            <View style={styles.optionContainer}>
-                {/* 터치 시 모달창 팀 설정 띄우기 */}
-                <TouchableOpacity style={styles.fileOption} onPress={handleTeamOptionPress}></TouchableOpacity>
-            </View>
-            {/* 팀 설정 모달창 */}
-            <Modal style={styles.modal} visible={TeamOptionModalVisible} transparent={true} animationType="fade">
-                {/* 모달창 회색 배경 */}
-                <View style={styles.background}>
-                    {/* 팀 설정 모달창 */}
-                    <Modal onSwipeComplete={() => SetTeamOptionModalVisible(false)}
-                        swipeDirection={"down"}
-                        animationType="slide"
-                        visible={TeamOptionModalVisible}
-                        onBackdropPress={handleTeamOptionPress}
-                        backdropOpacity={0}
-                        transparent={true}>
+        <TouchableOpacity onPress={() => navigation.navigate("AssignmentPage")}>
+            <ImageBackground style={styles.file} source={imageSource} >
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{title}</Text>
+                </View>
+                {/* 팀 파일 아이콘 옵션 버튼 */}
+                <View style={styles.optionContainer}>
+                    {/* 터치 시 모달창 팀 설정 띄우기 */}
+                    <TouchableOpacity style={styles.fileOption} onPress={handleTeamOptionPress}></TouchableOpacity>
+                </View>
+                {/* 팀 설정 모달창 */}
+                <Modal style={styles.modal} visible={TeamOptionModalVisible} transparent={true} animationType="fade">
+                    {/* 모달창 회색 배경 */}
+                    <View style={styles.background}>
                         {/* 팀 설정 모달창 */}
-                        <View style={styles.modalView}>
-                            {/* 모달창 내 아이템 (텍스트, 버튼 등) 컨테이너 */}
-                            <View style={styles.modalItemContainter}>
-                                {/* 모달창 상단 회색 막대 */}
-                                <View style={styles.modalVector}></View>
-                                {/* 모달창 상단 팀 이름 표시 */}
-                                <View flex={1}>
-                                    <Text>{title}</Text>
-                                </View>
-                                {/* 참여 코드, 팀원 목록 표시 */}
-                                <View flex={1}></View>
-                                {/* 팀 수정, 팀 삭제 버튼 컨테이너 */}
-                                <View style={styles.modalTeamBtnContainer}>
-                                    {/* 팀 수정 버튼 */}
-                                    <TouchableOpacity style={styles.teamReviseBtn} onPress={() => {
-                                        {/* 터치 시 팀 수정 화면으로 이동 (팀 이름, 색상, id까지 함꼐 전송) */}
-                                        navigation.navigate("TeamRevisePage",
-                                            { title: title, fileColor: fileColor, id: props.id });
-                                            {/* 모달 숨기기 */}
+                        <Modal onSwipeComplete={() => SetTeamOptionModalVisible(false)}
+                            swipeDirection={"down"}
+                            animationType="slide"
+                            visible={TeamOptionModalVisible}
+                            onBackdropPress={handleTeamOptionPress}
+                            backdropOpacity={0}
+                            transparent={true}>
+                            {/* 팀 설정 모달창 */}
+                            <View style={styles.modalView}>
+                                {/* 모달창 내 아이템 (텍스트, 버튼 등) 컨테이너 */}
+                                <View style={styles.modalItemContainter}>
+                                    {/* 모달창 상단 회색 막대 */}
+                                    <View style={styles.modalVector}></View>
+                                    {/* 모달창 상단 팀 이름 표시 */}
+                                    <View flex={1}>
+                                        <Text>{title}</Text>
+                                    </View>
+                                    {/* 참여 코드, 팀원 목록 표시 */}
+                                    <View flex={1}></View>
+                                    {/* 팀 수정, 팀 삭제 버튼 컨테이너 */}
+                                    <View style={styles.modalTeamBtnContainer}>
+                                        {/* 팀 수정 버튼 */}
+                                        <TouchableOpacity style={styles.teamReviseBtn} onPress={() => {
+                                            {/* 터치 시 팀 수정 화면으로 이동 (팀 이름, 색상, id까지 함꼐 전송) */ }
+                                            navigation.navigate("TeamRevisePage",
+                                                { title: title, fileColor: fileColor, id: props.id });
+                                            {/* 모달 숨기기 */ }
                                             SetTeamOptionModalVisible(false);
-                                    }}>
-                                        <Text style={styles.teamReviseText}>팀 수정</Text>
-                                    </TouchableOpacity>
-                                    {/* 팀 삭제 버튼 */}
-                                    <TouchableOpacity style={styles.teamDeleteBtn} onPress={deleteItem}>
-                                        {/* 터치 시 팀 삭제 */}
-                                        <Text style={styles.teamDeleteText}>팀 삭제</Text>
-                                    </TouchableOpacity>
+                                        }}>
+                                            <Text style={styles.teamReviseText}>팀 수정</Text>
+                                        </TouchableOpacity>
+                                        {/* 팀 삭제 버튼 */}
+                                        <TouchableOpacity style={styles.teamDeleteBtn} onPress={deleteItem}>
+                                            {/* 터치 시 팀 삭제 */}
+                                            <Text style={styles.teamDeleteText}>팀 삭제</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
+                        </Modal>
+                        <View>
                         </View>
-                    </Modal>
-                    <View>
                     </View>
-                </View>
-            </Modal>
-        </ImageBackground>
+                </Modal>
+            </ImageBackground>
+        </TouchableOpacity>
     )
 }
 
