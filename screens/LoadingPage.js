@@ -1,7 +1,7 @@
+//로딩 화면
 import { useNavigation } from "@react-navigation/core";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Image} from "react-native";
-
 
 export default function LoadingPage() {
   const navigation = useNavigation()

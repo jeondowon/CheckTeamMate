@@ -1,83 +1,53 @@
 //팀 화면
 import { useNavigation } from "@react-navigation/core";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Dimensions, TouchableWithoutFeedback, Modal} from "react-native";
-import { useState, useCallback, useEffect} from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity, 
+        FlatList, Dimensions, TouchableWithoutFeedback, Modal } from "react-native";
+import { useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import TeamItem from "./TeamItem";
-import { db, doc, updateDoc, deleteDoc, getDocs, collection, addDoc } from "../firebase/index"
+import { db, doc, deleteDoc, getDocs, collection } from "../firebase/index"
 import * as React from 'react';
-import TeamRevisePage from "./TeamRevisePage";
-import { onSnapshot } from 'firebase/firestore';
 
-
-
+//반응형 디자인을 위한 스크린의 높이, 넓이 구하는 코드
 const WINDOW_WIDHT = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
-  
+
 TeamPage = () => {
-    
     const navigation = useNavigation()
 
+    {/* 플러스 버튼 터치 시 팀등록/팀 참여하기 버튼 모달창 띄우기/숨기기 함수 */}
     const [showModal, setShowModal] = useState(false);
-
     const handlePress = () => {
-        if (showModal) {
-            setShowModal(false);
-        } else {
-            setShowModal(true);
-        }
+        setShowModal(!showModal);
     };
 
     const [teamList, setTeamList] = useState([]);
-
-    // read data
+    //firebase에서 데이터 읽어오는 코드
     const getTeamList = async () => {
         const querySnapshot = await getDocs(collection(db, "team"));
         setTeamList(
-            querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id, fileColor: doc.fileImage}))
+            querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id, fileColor: doc.fileImage }))
         );
     };
 
+    {/* 팀 삭제 코드 */}
     const deleteTeamItem = async (id) => {
         await deleteDoc(doc(db, "team", id));
         getTeamList();
     };
-    
-    useEffect(() => {
-        // 컴포넌트가 마운트될 때 실행되는 코드
-        const teamCollection = collection(db, 'team');
-    
-        // 컬렉션에 대한 실시간 업데이트를 감지하는 이벤트 핸들러
-        const onCollectionUpdate = (querySnapshot) => {
-            setTeamList(
-              querySnapshot.docs.map((doc) => {
-                const data = { ...doc.data(), id: doc.id, fileColor: doc.fileImage };
-                console.log('id:', data.id);
-                console.log('fileColor:', data.fileImage);
-                return data;
-              })
-            );
-          };
-        
-    
-        // 이벤트 리스너 등록
-        const unsubscribe = onSnapshot(teamCollection, onCollectionUpdate);
-    
-        // 컴포넌트가 언마운트될 때 이벤트 리스너 해제
-        return () => {
-          unsubscribe();
-        };
-      }, [setTeamList]);
 
-    const [TeamOptionModalVisible, SetTeamOptionModalVisible] = useState(false);
-    handleTeamOptionPress = () => {
-        SetTeamOptionModalVisible(!TeamOptionModalVisible);
-    }
+    {/* TeamPage에 들어올 시 getTeamList 함수 작동 (새로고침 함수)*/}
+    useFocusEffect(
+        React.useCallback(() => {
+            getTeamList();
+        }, [teamList])
+    );
 
     return (
         <View style={styles.container}>
             <StatusBar style={"dark"}></StatusBar>
+            {/* 플러스 버튼 */}
             <View style={styles.addBtnContainter}>
                 <TouchableOpacity style={styles.addBtnContainter} onPress={handlePress}>
                     <Image style={styles.addBtn} source={require("./Images/ClassAddBtn.png")}></Image>

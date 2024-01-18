@@ -2,39 +2,42 @@
 import React, { useState } from 'react';
 import { useNavigation } from "@react-navigation/core";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
+import { color } from './colors';
 
 export default function SignInPage() {
   const navigation = useNavigation()
 
-  const [signInBtnColor, setSignInBtnColor] = useState("#D9D9D9");    //가입하기 버튼 색상 (초기값: 회색)
+  const [signInBtnColor, setSignInBtnColor] = useState(color.deactivated);    //가입하기 버튼 색상 (초기값: 비활성화(회색))
   const [buttonDisabled, setButtonDisabled] = useState(true);     //가입하기 버튼 비활성화/활성화 (초기값: 비활성화)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //문자 입력시 확인버튼 활성화, 색상 변경
+   //조건 수정 필요(이메일과 비밀번호를 같이 판별해야함 ex)비밀번호와 이메일이 모두 valid input인 경우 버튼 활성화
+  {/*이메일 입력란에 문자 입력시 확인버튼 활성화*/ }
   const emailInputChange = (text) => {
     setEmail(text);
-    if (text.length > 0) {
+    if (text.length > 5) {
       setButtonDisabled(false);
-      setSignInBtnColor("#050026");
+      setSignInBtnColor(color.activated);
     }
     else {
       setButtonDisabled(true);
-      setSignInBtnColor("#D9D9D9");
+      setSignInBtnColor(color.deactivated);
     }
   };
+  {/*비밀번호 입력란에 문자 입력시 확인버튼 활성화*/ }  //조건 수정 필요
   const passwordInputChange = (text) => {
     setPassword(text);
     if (text.length > 5) {
       setButtonDisabled(false);
-      setSignInBtnColor("#050026");
+      setSignInBtnColor(color.activated);
     }
     else {
       setButtonDisabled(true);
-      setSignInBtnColor("#D9D9D9");
+      setSignInBtnColor(color.deactivated);
     }
   };
 
@@ -42,22 +45,26 @@ export default function SignInPage() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View /*behavior='padding'*/ style={styles.container}>
         <StatusBar style={"dark"}></StatusBar>
+        {/* 뒤로가기 버튼 */}
         <View style={styles.backBtn}>
           <TouchableOpacity onPress={() => navigation.navigate("InitialPage")}>
-            <AntDesign name="left" size={30} color="black" />
+            <AntDesign name="left" size={20} color="black" />
           </TouchableOpacity>
         </View>
+        {/* 이메일 입력란 */}
         <View style={styles.inputContainer}>
           <View style={styles.TextInputContainer}>
             <View>
               <TextInput placeholder='이메일' onChangeText={emailInputChange} style={styles.TextInput}></TextInput>
             </View>
           </View>
+          {/* 비밀번호 입력란 */}
           <View style={styles.TextInputContainer}>
             <View>
               <TextInput placeholder='비밀번호' secureTextEntry={true} onChangeText={passwordInputChange} style={styles.TextInput}></TextInput>
             </View>
           </View>
+          {/* 가입하기 버튼 */}
           <View style={styles.BtnContainter}>
             <TouchableOpacity disabled={buttonDisabled} onPress={() => navigation.navigate("TeamPage")}>
               <View style={{ ...styles.logInBtn, backgroundColor: signInBtnColor }}>

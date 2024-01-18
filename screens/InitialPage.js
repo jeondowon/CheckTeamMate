@@ -1,24 +1,27 @@
-//시작 화면
+//시작 화면 (로그인 하기 전)
 import { useNavigation } from "@react-navigation/core";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions} from "react-native";
 
-
-//const WINDOW_WIDHT = Dimensions.get("window").width;      //반응형 디자인을 위해 스크린 사이즈를 구하였으나 사용할지는 의문.
-//const WINDOW_HEIGHT = Dimensions.get("window").height;
+//반응형 디자인을 위한 스크린의 높이, 넓이 구하는 코드
+{/*const WINDOW_WIDHT = Dimensions.get("window").width;
+const WINDOW_HEIGHT = Dimensions.get("window").height;*/}
 
 export default function InitialPage({ navigation }) {
   //const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <StatusBar style={"dark"}></StatusBar>
+      {/*로고 이미지*/}
       <View style={styles.logoContainter}>
         <Image style={styles.logoImage} source={require("./Images/logo.png")}></Image>
       </View>
+      {/*넘어가는 그림들*/}
       <View style={styles.imgContainer}>
         <Image style={styles.logInImage} source={require("./Images/LoginImages.gif")}></Image>
         <Text style={styles.description}>무임승차를 방지하기 위한 최적의 방법</Text>
       </View>
+      {/* 로그인 버튼, 가입하기 버튼 */}
       <View style={styles.BtnContainter}>
         <TouchableOpacity>
           <View style={styles.logInBtn}>

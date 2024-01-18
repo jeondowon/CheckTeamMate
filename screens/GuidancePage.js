@@ -1,3 +1,4 @@
+//대학생활 길라잡이 페이지
 import {View, Text, StyleSheet} from "react-native";
 
 const GuidancePage = () => {

@@ -1,3 +1,4 @@
+//시간표 혹은 일정 화면 (디자인과 구성 디벨롭 필요)
 import {View, Text, StyleSheet} from "react-native";
 
 const SchedulePage = () => {

@@ -9,14 +9,14 @@ import { color } from './colors';
 export default function TeamJoinPage() {
     const navigation = useNavigation()
 
-    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);      //확인 버튼 색상 초기값 (회색)
-    const [buttonDisabled, setButtonDisabled] = useState(true);             //확인 버튼 상태 초기값 (비활성화 상태)
+    {/* 확인 버튼 (초기값: 비활성화 상태*/}
+    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
 
     //참여코드
     const [joinCode, setJoinCode] = useState("");
-    //문자 입력시 확인버튼 활성화, 색상 변경
 
-    //문자 입력시 확인버튼 활성화, 색상 변경
+    //참여코드 입력란에 문자 입력시 확인 버튼 활성화, 색상 변경
     const joinCodeInputChange = (text) => {
         setJoinCode(text);
         if (text.length > 0) {
@@ -33,10 +33,11 @@ export default function TeamJoinPage() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <StatusBar style={"dark"}></StatusBar>
+                {/* 뒤로가기 버튼, 헤더, 확인버튼 컨테이너 */}
                 <View style={styles.headerContainer}>
                     <View style={styles.backBtn}>
                         <TouchableOpacity onPress={() => { navigation.navigate("TeamPage") }}>
-                            <AntDesign name="left" size={30} color="black" />
+                            <AntDesign name="left" size={20} color="black" />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.headerTitleContainer}>
@@ -48,6 +49,7 @@ export default function TeamJoinPage() {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {/* 참여코드 입력란 */}
                 <View style={styles.inputContainer}>
                     <View style={styles.TextInputContainer}>
                         <View>

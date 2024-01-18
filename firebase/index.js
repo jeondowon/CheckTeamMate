@@ -4,12 +4,12 @@ import {getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc} fr
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCvpPcoQUtVV1gQQtuiDlP80csuH6Vf93s",
-  authDomain: "checkteam-54339.firebaseapp.com",
-  projectId: "checkteam-54339",
-  storageBucket: "checkteam-54339.appspot.com",
-  messagingSenderId: "1092646428581",
-  appId: "1:1092646428581:web:3bd91e789522953b7d124c"
+  apiKey: "AIzaSyA2vCA5sk4jyjIEGjKmfBznjE2W_es7G24",
+  authDomain: "check-530bd.firebaseapp.com",
+  projectId: "check-530bd",
+  storageBucket: "check-530bd.appspot.com",
+  messagingSenderId: "683353020273",
+  appId: "1:683353020273:web:eb3258a64986d6ee6b08d0"
 };
 
 // Initialize Firebase

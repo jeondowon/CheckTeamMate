@@ -1,3 +1,4 @@
+//설정 화면
 import {View, Text, StyleSheet} from "react-native";
 
 const SettingPage = () => {

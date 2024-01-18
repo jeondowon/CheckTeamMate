@@ -1,3 +1,4 @@
+//개인화면
 import {View, Text, StyleSheet} from "react-native";
 
 const PersonalPage = () => {

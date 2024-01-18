@@ -12,37 +12,31 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const TeamAddPage = ({navigation}) => {
 
-    //색상 선택 모달창 띄우기/숨기기 (초기값: 숨기기)
+    {/* 색상 선택 팔레트 모달창 띄우기/숨기기 함수 */}
     const [isModalVisible, setIsModalVisible] = useState(false);
     const openModal = () => {
-        setIsModalVisible(true);
+        setIsModalVisible(!isModalVisible);
     }
-    const onPressModalClose = () => {
-        setIsModalVisible(false);
-    }
-    //색상 옵션 (초기값: 어두운 남색(기본 색상))
+    
+    {/* 색상 옵션 (확정된 색상 아님) (초기값: 기본 색상) */}
     const [selectedColor, setSelectedColor] = useState(color.colors1[0]);
     const handleColorSelect = (color) => {
         setSelectedColor(color);
     };
-
-    const [colorConfirmed, setColorConfirmed] = useState(color.colors1[0]);    //확인버튼 누른 후 확정된 색상
-
-    //모달에서 색상 선택 후 확인 누르면 색상 변경 -> 모달 close
+    {/* 확인버튼 터치 후 확정된 색상 */}
+    const [colorConfirmed, setColorConfirmed] = useState(color.colors1[0]);
+    //모달에서 색상 선택 후 확인 누르면 파일 아이콘의 색상 변경과 동시에 모달 close (색상 확정)
     const confirmColor = () => {
         console.log(selectedColor);
         setColorConfirmed(selectedColor);
-        onPressModalClose();
+        openModal();
     };
-    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);      //확인 버튼 색상 초기값 (회색)
-    const [buttonDisabled, setButtonDisabled] = useState(true);             //확인 버튼 상태 초기값 (비활성화 상태)
 
-    //const [teamName, setTeamName] = useState("");
-
-    //문자 입력시 확인버튼 활성화, 색상 변경
-
+    {/* 팀 등록 입력란 확인 버튼 함수 */}
+    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
     const [textInputValue, setTextInputValue] = useState("");
-
+    {/* 팀 등록 입력란에 문자 입력시 확인버튼 활성화, 확인버튼 터치 시 파일 아이콘 색상 확정 */}
     const onTextInputChange = (text) => {
         setTextInputValue(text)
         if (text.length > 0) {
@@ -55,19 +49,22 @@ const TeamAddPage = ({navigation}) => {
         }
     };
 
+    {/* 팀 등록 입력란에 정보 입력 후 확인 버튼 터치 시 firebase에 데이터 저장 */}
     const addTeamItem = async () => {
         try {
           const docRef = await addDoc(collection(db, "team"), {
             title: textInputValue,
             fileImage: colorConfirmed,
           });
-          console.log("Document written with ID: ", docRef.id, "title:", textInputValue, "fileImage:", colorConfirmed);
+          console.log("Document written with ID: ", docRef.id, 
+          "title:", textInputValue, 
+          "fileImage:", colorConfirmed);
         } catch (e) {
           console.error("Error adding document: ", e);
         }
       };
-
-      confirmBtnPressed = () => {
+    {/* 확인버튼 터치 시 addTeamItem 함수 동작 */}
+    const confirmBtnPressed = () => {
         addTeamItem();
     };
 
@@ -75,10 +72,11 @@ const TeamAddPage = ({navigation}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <StatusBar style={"dark"}></StatusBar>
+                {/* 뒤로가기 버튼, 팀 등록 헤더와 확인버튼 컨테이너 */}
                 <View style={styles.headerContainer}>
                     <View style={styles.backBtn}>
                         <TouchableOpacity onPress={() => { navigation.navigate("TeamPage") }}>
-                            <AntDesign name="left" size={30} color="black" />
+                            <AntDesign name="left" size={20} color="black" />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.headerTitleContainer}>
@@ -88,6 +86,7 @@ const TeamAddPage = ({navigation}) => {
                         <Text style={{ ...styles.headerText, color: confirmBtnColor }} onPress={() => {confirmBtnPressed(); navigation.navigate('TeamPage');}}>확인</Text>
                     </TouchableOpacity>
                 </View>
+                {/* 팀 이름 입력란과 색상 선택 버튼*/}
                 <View style={{ ...styles.colorTextInputContainer, borderColor: colorConfirmed }}>
                     <View flex={1}>
                         <TextInput 
@@ -98,6 +97,7 @@ const TeamAddPage = ({navigation}) => {
                         style={styles.colorTextInput}
                         ></TextInput>
                     </View>
+                    {/* 색상 선택 버튼 */}
                     <TouchableWithoutFeedback onPress={openModal}>
                         <View style={styles.circleContainer}>
                             <View style={{ ...styles.circle, backgroundColor: colorConfirmed }}></View>
@@ -108,23 +108,31 @@ const TeamAddPage = ({navigation}) => {
                 <View style={styles.descriptionContainter}>
                     <Text style={styles.description}>색상을 변경할 수 있습니다</Text>
                 </View>
+                {/* 색상 선택 팔레트 모달창 */}
                 <View>
+                    {/* 색상 팔레트 모달창 회색 배경 */}
                     <Modal animationType="fade"
                         visible={isModalVisible}
                         transparent={true}>
                         <View style={styles.modalBackground}>
+                            {/* 색상 팔레트 swipeable 모달창 */}
                             <Modal onSwipeComplete={() => setIsModalVisible(false)}
                                 swipeDirection={"down"}
                                 animationType="slide"
                                 visible={isModalVisible}
-                                onBackdropPress={onPressModalClose}
+                                onBackdropPress={openModal}
                                 backdropOpacity={0}
                                 transparent={true}>
                                 <View style={styles.modalView}>
+                                    {/* 색상 팔레트 모달창 내 색상, 확인버튼 컨테이너 */}
                                     <View style={styles.modalItemContainter}>
+                                        {/* 모달창 상위 부분 회색 막대기 */}
                                         <View style={styles.modalVector}></View>
+                                        {/* 모달창 내 색상 옵션 컨테이너 */}
                                         <View style={styles.colorContainer}>
-                                            <View style={styles.modalColorsContainer}>
+                                            {/* 6x6 색상 옵션 컨테이너 (rowColorsContainer 하나당 색상 6개씩 총 6줄) */}
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 첫 번째 줄 */}
                                                 {color.colors1.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -133,7 +141,8 @@ const TeamAddPage = ({navigation}) => {
                                                     </TouchableWithoutFeedback>
                                                 ))}
                                             </View>
-                                            <View style={styles.modalColorsContainer}>
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 두 번째 줄 */}
                                                 {color.colors2.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -142,7 +151,8 @@ const TeamAddPage = ({navigation}) => {
                                                     </TouchableWithoutFeedback>
                                                 ))}
                                             </View>
-                                            <View style={styles.modalColorsContainer}>
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 세 번째 줄 */}
                                                 {color.colors3.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -151,7 +161,8 @@ const TeamAddPage = ({navigation}) => {
                                                     </TouchableWithoutFeedback>
                                                 ))}
                                             </View>
-                                            <View style={styles.modalColorsContainer}>
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 네 번째 줄 */}
                                                 {color.colors4.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -160,7 +171,8 @@ const TeamAddPage = ({navigation}) => {
                                                     </TouchableWithoutFeedback>
                                                 ))}
                                             </View>
-                                            <View style={styles.modalColorsContainer}>
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 다섯 번째 줄 */}
                                                 {color.colors5.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -169,7 +181,8 @@ const TeamAddPage = ({navigation}) => {
                                                     </TouchableWithoutFeedback>
                                                 ))}
                                             </View>
-                                            <View style={styles.modalColorsContainer}>
+                                            <View style={styles.rowColorsContainer}>
+                                                {/* 팔레트 여섯 번째 줄 */}
                                                 {color.colors6.map((color, index) => (
                                                     <TouchableWithoutFeedback key={index} onPress={() => handleColorSelect(color)}>
                                                         <View style={[styles.circleSelected, { borderColor: selectedColor === color ? 'grey' : 'white' }]}>
@@ -179,6 +192,7 @@ const TeamAddPage = ({navigation}) => {
                                                 ))}
                                             </View>
                                         </View>
+                                        {/* 색상 팔레트 확인 버튼 */}
                                         <View style={styles.modalBtnContainer}>
                                             <TouchableOpacity onPress={confirmColor}>
                                                 <Image style={styles.modalConfirmBtn} source={require("./Images/modalConfirmBtn.png")}></Image>
@@ -245,7 +259,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    modalColorsContainer: {
+    rowColorsContainer: {
         flexDirection: "row",
         justifyContent: "space-evenly",
         width: "95%",
@@ -301,7 +315,7 @@ const styles = StyleSheet.create({
     triangle: {
         width: 10,
         height: 10,
-        marginLeft: "3%",
+        marginLeft: "18%",
         marginRight: "5%"
     },
     circleContainer: {

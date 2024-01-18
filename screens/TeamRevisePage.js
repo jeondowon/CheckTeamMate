@@ -1,51 +1,43 @@
 //팀 수정 화면
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { color } from './colors';
-import { db, collection, addDoc, updateDoc, doc } from "../firebase/index";
+import { db, updateDoc, doc } from "../firebase/index";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/core";
 
-
+//반응형 디자인을 위한 스크린의 높이, 넓이 구하는 코드
 const WINDOW_WIDHT = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const TeamRevisePage = ({ route }) => {
-    const { title, fileColor, id} = route.params;
-    const [textInputValue, setTextInputValue] = useState(title);
-    const [selectedColor, setSelectedColor] = useState(fileColor);
-
     const navigation = useNavigation();
-    //색상 선택 모달창 띄우기/숨기기 (초기값: 숨기기)
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const openModal = () => {
-        setIsModalVisible(true);
-    }
-    const onPressModalClose = () => {
-        setIsModalVisible(false);
-    }
-    //색상 옵션 (초기값: 어두운 남색(기본 색상))
+
+    {/* TeamItem에서 불러온 값들 (title: 팀 이름, fileColor: 파일 아이콘 색상, id: firebase에 저장되어있는 팀 고유 id) */}
+    const { title, fileColor, id} = route.params;
+        
+    {/* 기존의 색상을 저장 */}
+    const [selectedColor, setSelectedColor] = useState(fileColor);
+    {/* 팔레트에서 색상 수정 선택 (확정된 색상 아님)*/}
     const handleColorSelect = (color) => {
         setSelectedColor(color);
     };
 
-    const [colorConfirmed, setColorConfirmed] = useState(fileColor);    //확인버튼 누른 후 확정된 색상
-
-    //모달에서 색상 선택 후 확인 누르면 색상 변경 -> 모달 close
+    {/* 확인버튼 누른 후 확정된 색상 */}
+    const [colorConfirmed, setColorConfirmed] = useState(fileColor);
+    {/*모달에서 색상 선택 후 확인 버튼 터치 시 수정 색상 확정, 모달 close */}
     const confirmColor = () => {
         console.log(selectedColor);
         setColorConfirmed(selectedColor);
-        onPressModalClose();
+        handleModalPress();
     };
-    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);      //확인 버튼 색상 초기값 (회색)
-    const [buttonDisabled, setButtonDisabled] = useState(true);             //확인 버튼 상태 초기값 (비활성화 상태)
 
-    //const [teamName, setTeamName] = useState("");
-
-    //문자 입력시 확인버튼 활성화, 색상 변경
-
+    const [textInputValue, setTextInputValue] = useState(title);
+    {/* 문자 입력 혹은 색상 변경 시 확인 버튼 활성화 (조건 수정 필요) */}
+    const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
     const onTextInputChange = (text) => {
         setTextInputValue(text)
         if (text.length > 0) {
@@ -57,7 +49,14 @@ const TeamRevisePage = ({ route }) => {
             setConfirmBtnColor(color.deactivated);
         }
     };
-    
+
+    {/* 색상 선택 모달창 띄우기/숨기기 (초기값: 숨기기) */}
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const handleModalPress = () => {
+        setIsModalVisible(!isModalVisible);
+    }
+
+    {/* 팀이름, 색상 firebase에 업데이트 */}
     const updateTeam = async() => {
         const teamRef = doc(db, "team", id);
         await updateDoc(teamRef, {
@@ -66,10 +65,7 @@ const TeamRevisePage = ({ route }) => {
         });
     };
 
-    const confirmChanges = () => {
-        updateTeam();
-    };
-
+    {/* TeamAddPage와 구성은 동일 */}
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
@@ -83,7 +79,7 @@ const TeamRevisePage = ({ route }) => {
                     <View style={styles.headerTitleContainer}>
                         <Text style={styles.headerText}>팀 수정</Text>
                     </View>
-                    <TouchableOpacity disabled={buttonDisabled} style={styles.confirmBtn} onPress={() => { confirmChanges(); navigation.navigate('TeamPage'); }}>
+                    <TouchableOpacity disabled={buttonDisabled} style={styles.confirmBtn} onPress={() => { updateTeam(); navigation.navigate('TeamPage'); }}>
                         <Text style={{ ...styles.headerText, color: confirmBtnColor }} >확인</Text>
                     </TouchableOpacity>
                 </View>
@@ -97,7 +93,7 @@ const TeamRevisePage = ({ route }) => {
                             style={styles.colorTextInput}
                         ></TextInput>
                     </View>
-                    <TouchableWithoutFeedback onPress={openModal}>
+                    <TouchableWithoutFeedback onPress={handleModalPress}>
                         <View style={styles.circleContainer}>
                             <View style={{ ...styles.circle, backgroundColor: colorConfirmed }}></View>
                             <Image style={styles.triangle} source={require("./Images/ColorSelectionTriangleBtn.png")}></Image>
@@ -116,7 +112,7 @@ const TeamRevisePage = ({ route }) => {
                                 swipeDirection={"down"}
                                 animationType="slide"
                                 visible={isModalVisible}
-                                onBackdropPress={onPressModalClose}
+                                onBackdropPress={handleModalPress}
                                 backdropOpacity={0}
                                 transparent={true}>
                                 <View style={styles.modalView}>
