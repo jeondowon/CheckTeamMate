@@ -27,15 +27,17 @@ const TeamRevisePage = ({ route }) => {
 
     {/* 확인버튼 누른 후 확정된 색상 */}
     const [colorConfirmed, setColorConfirmed] = useState(fileColor);
-    {/*모달에서 색상 선택 후 확인 버튼 터치 시 수정 색상 확정, 모달 close */}
+    {/*모달에서 색상 선택 후 확인 버튼 터치 시 수정 색상 확정, 모달 close, 확인버튼 활성화 */}
     const confirmColor = () => {
         console.log(selectedColor);
         setColorConfirmed(selectedColor);
+        setButtonDisabled(false);
+        setConfirmBtnColor(color.activated);
         handleModalPress();
     };
 
     const [textInputValue, setTextInputValue] = useState(title);
-    {/* 문자 입력 혹은 색상 변경 시 확인 버튼 활성화 (조건 수정 필요) */}
+    {/* 문자 입력 시 확인 버튼 활성화 */}
     const [confirmBtnColor, setConfirmBtnColor] = useState(color.deactivated);
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const onTextInputChange = (text) => {
@@ -73,7 +75,7 @@ const TeamRevisePage = ({ route }) => {
                 <View style={styles.headerContainer}>
                     <View style={styles.backBtn}>
                         <TouchableOpacity onPress={() => { navigation.navigate("TeamPage") }}>
-                            <AntDesign name="left" size={30} color="black" />
+                            <AntDesign name="left" size={20} color="black" />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.headerTitleContainer}>
@@ -308,7 +310,7 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         marginTop: "5%",
-        flex: 0.13,
+        flex: 0.15,
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",

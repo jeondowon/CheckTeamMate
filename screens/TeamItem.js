@@ -148,7 +148,10 @@ const TeamItem = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("AssignmentPage")}>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("AssignmentPage", 
+            { title: title, fileColor: fileColor, id: props.id })
+            }}>
             <ImageBackground style={styles.file} source={imageSource} >
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{title}</Text>
@@ -159,7 +162,7 @@ const TeamItem = (props) => {
                     <TouchableOpacity style={styles.fileOption} onPress={handleTeamOptionPress}></TouchableOpacity>
                 </View>
                 {/* 팀 설정 모달창 */}
-                <Modal style={styles.modal} visible={TeamOptionModalVisible} transparent={true} animationType="fade">
+                <Modal style={styles.modal} visible={TeamOptionModalVisible} transparent={true} animationType="fade" >
                     {/* 모달창 회색 배경 */}
                     <View style={styles.background}>
                         {/* 팀 설정 모달창 */}
@@ -169,7 +172,8 @@ const TeamItem = (props) => {
                             visible={TeamOptionModalVisible}
                             onBackdropPress={handleTeamOptionPress}
                             backdropOpacity={0}
-                            transparent={true}>
+                            transparent={true}
+                            >
                             {/* 팀 설정 모달창 */}
                             <View style={styles.modalView}>
                                 {/* 모달창 내 아이템 (텍스트, 버튼 등) 컨테이너 */}

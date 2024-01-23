@@ -91,7 +91,8 @@ export default function App() {
             
 
             return <Image source={iconName} style={{ width: 25, height: 25}} />;
-          }, headerShown: false, tabBarStyle: {height: "10%"}, tabBarLabelStyle: {paddingBottom: 7}, tabBarActiveTintColor: "black", tabBarInactiveTintColor: "black"
+          }, headerShown: false, tabBarStyle: {height: "10%", borderTopWidth: 0}, tabBarLabelStyle: {paddingBottom: 7}, 
+          tabBarActiveTintColor: "black", tabBarInactiveTintColor: "black"
         })}>
         {/*<Stack.Screen name="InitialPage" component={InitialPage} ></Stack.Screen>
         <Stack.Screen name="SignInPage" component={SignInPage}></Stack.Screen>*/}
