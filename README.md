@@ -1,10 +1,9 @@
 <img width="2172" height="724" alt="CheckTeamMate" src="https://github.com/user-attachments/assets/d9acf7d2-8e29-49eb-83d8-e41ad5615ec7" />
+
 # TeamCheckMate
 
 English | [한국어](#한국어)
-
 ---
-
 A mobile application for university group project collaboration. Assign tasks to teammates, track progress, and manage your team — all in one place. 
 
 ## Features
