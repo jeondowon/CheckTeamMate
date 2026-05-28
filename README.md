@@ -4,7 +4,7 @@ English | [한국어](#한국어)
 
 ---
 
-A mobile application for university group project collaboration. Assign tasks to teammates, track progress, and manage your team — all in one place.
+A mobile application for university group project collaboration. Assign tasks to teammates, track progress, and manage your team — all in one place. 
 
 ## Features
 
